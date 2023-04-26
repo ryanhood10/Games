@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Space Invaders</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: black;
+    }
+
+    canvas {
+      border: 1px solid white;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="gameCanvas" width="800" height="600"></canvas>
+  <script>
+  const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+class Player {
+  constructor(x, y, width, height) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+    this.canShoot = true; // Add a property to track the player's shooting rate
+  }
+
+  draw() {
+    ctx.fillStyle = 'white';
+    ctx.fillRect(this.x, this.y, this.width, this.height);
+  }
+
+  move(direction) {
+    this.x += direction;
+  }
+
+  shoot() {
+    if (!this.canShoot) {
+      return; // Exit the method if the player can't shoot yet
+    }
+
+    const bullet = new Bullet(this.x + this.width / 2 - 2, this.y - 10, 4, 10);
+    bullets.push(bullet);
+    this.canShoot = false; // Set a cooldown period before the player can shoot again
+    setTimeout(() => {
+      this.canShoot = true;
+    }, 500); // Set the cooldown time in milliseconds
+  }
+}
+
+
+class Invader {
+  constructor(x, y, width, height) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+  }
+
+  draw() {
+    ctx.fillStyle = 'green';
+    ctx.fillRect(this.x, this.y, this.width, this.height);
+  }
+}
+
+class Bullet {
+  constructor(x, y, width, height) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+  }
+
+  draw() {
+    ctx.fillStyle = 'white';
+    ctx.fillRect(this.x, this.y, this.width, this.height);
+  }
+
+  update() {
+    this.y -= 5;
+  }
+}
+
+const player = new Player(canvas.width / 2 - 25, canvas.height - 50, 50, 20);
+const invaders = [];
+const bullets = [];
+const invaderWidth = 40;
+const invaderHeight = 20;
+const invaderPadding = 10;
+const invaderSpeed = 1;
+
+for (let i = 0; i < 10; i++) {
+  const x = i * (invaderWidth + invaderPadding);
+  const y = 50;
+  invaders.push(new Invader(x, y, invaderWidth, invaderHeight));
+}
+
+let moveDirection = invaderSpeed;
+
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  player.draw();
+
+  for (const invader of invaders) {
+    invader.draw();
+  }
+
+  for (const bullet of bullets) {
+    bullet.draw();
+  }
+}
+
+
+function update() {
+  for (const invader of invaders) {
+    invader.x += moveDirection;
+  }
+
+  for (const bullet of bullets) {
+    bullet.update();
+  }
+
+  bullets.forEach((bullet, bulletIndex) => {
+    invaders.forEach((invader, invaderIndex) => {
+      if (bullet.x < invader.x + invader.width &&
+          bullet.x + bullet.width > invader.x &&
+          bullet.y < invader.y + invader.height &&
+          bullet.y + bullet.height > invader.y) {
+        bullets.splice(bulletIndex, 1);
+        invaders.splice(invaderIndex, 1);
+      }
+    });
+  });
+
+  const leftMostInvader = invaders[0];
+  const rightMostInvader = invaders[invaders.length - 1];
+
+  if (leftMostInvader.x < 0 || rightMostInvader.x + invaderWidth > canvas.width) {
+    moveDirection = -moveDirection;
+    for (const invader of invaders) {
+      invader.y += invaderHeight;
+    }
+  }
+}
+
+function gameLoop() {
+  update();
+  draw();
+  requestAnimationFrame(gameLoop);
+}
+
+gameLoop();
+
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'ArrowLeft' && player.x > 0) {
+    player.move(-10);
+  } else if (event.key === 'ArrowRight' && player.x < canvas.width - player.width) {
+    player.move(10);
+  } else if (event.key === ' ' && player.canShoot) { // Add this else-if statement to check for spacebar and shooting cooldown
+    player.shoot();
+  }
+});
+
+    </script>
+</body>
+</html>

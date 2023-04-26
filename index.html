@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rock Paper Scissors</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+  }
+  .score {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+  }
+  button {
+    font-size: 1.25rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    background: none;
+    border: none;
+  }
+  button img {
+    width: 100px;
+    height: auto;
+  }
+  .result {
+    font-size: 1.25rem;
+    margin-top: 1rem;
+  }
+  .win-message {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: green;
+  margin-top: 2rem;
+}
+
+</style>
+</head>
+<body>
+<h1>Rock Paper Scissors</h1>
+<p class="score">Player: 0 | Computer: 0</p>
+<div class="buttons">
+  <button onclick="play('rock')">
+    <img src="rock.png" alt="Rock">
+  </button>
+  <button onclick="play('paper')">
+    <img src="paper.png" alt="Paper">
+  </button>
+  <button onclick="play('scissors')">
+    <img src="scissors.jpg" alt="Scissors">
+  </button>
+</div>
+<p class="result"></p>
+<div class="win-message" style="display: none;">You've won 5 games!</div>
+<div class="next-game" style="display: none;">
+    <p>The next game is available!</p>
+    <button onclick="goToGame2()">Click here</button>
+  </div>
+  
+
+
+<script>
+  let playerScore = 0;
+  let computerScore = 0;
+
+  function play(playerChoice) {
+  const computerChoice = getRandomChoice();
+  const result = getResult(playerChoice, computerChoice);
+
+  if (result === 'player') {
+    playerScore++;
+  } else if (result === 'computer') {
+    computerScore++;
+  }
+
+  document.querySelector('.score').textContent = `Player: ${playerScore} | Computer: ${computerScore}`;
+  document.querySelector('.result').textContent = `Player chose ${playerChoice}, Computer chose ${computerChoice}. ${result === 'tie' ? 'It\'s a tie!' : result.charAt(0).toUpperCase() + result.slice(1) + ' wins!'}`;
+
+  // Show the win-message when the player's score reaches 5 or greater
+// Show the win-message and next-game when the player's score reaches 5 or greater
+    if (playerScore >= 5) {
+  document.querySelector('.win-message').style.display = 'block';
+  document.querySelector('.next-game').style.display = 'block';
+}
+
+}
+
+//function to make the computer choose a random outcome
+  function getRandomChoice() {
+    const choices = ['rock', 'paper', 'scissors'];
+    return choices[Math.floor(Math.random() * choices.length)];
+  }
+  
+  function getResult(player, computer) {
+    if (player === computer) {
+      return 'tie';
+    }
+
+    const rules = {
+      rock: 'scissors',
+      paper: 'rock',
+      scissors: 'paper'
+    };
+
+    //
+
+    return rules[player] === computer ? 'player' : 'computer';
+  }
+
+  function goToGame2() {
+  window.location.href = "game2.html";
+}
+
+</script>
+</body>
+</html>

@@ -145,6 +145,27 @@ function update() {
   const leftMostInvader = invaders[0];
   const rightMostInvader = invaders[invaders.length - 1];
 
+  if (invaders.length === 0) {
+    clearInterval(gameInterval);
+    const congratsText = document.createElement('h4');
+    congratsText.textContent = "Congrats! You have saved Earth from the invaders!  You have unlocked the next game.";
+    congratsText.style.color = 'white';
+    document.body.appendChild(congratsText);
+
+    const button = document.createElement('button');
+button.textContent = "Click here";
+button.style.backgroundColor = "white";
+button.style.color = "black";
+button.style.border = "none";
+button.style.padding = "10px 20px";
+button.style.borderRadius = "5px";
+button.addEventListener('click', () => {
+  window.location.href = "game4.html";
+});
+document.body.appendChild(button);
+
+  }
+
   if (leftMostInvader.x < 0 || rightMostInvader.x + invaderWidth > canvas.width) {
     moveDirection = -moveDirection;
     for (const invader of invaders) {
@@ -152,6 +173,13 @@ function update() {
     }
   }
 }
+
+const gameInterval = setInterval(() => {
+  update();
+  draw();
+}, 16.67);
+
+
 
 function gameLoop() {
   update();

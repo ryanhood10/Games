@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pong</title>
+<style>
+  canvas {
+    display: block;
+    margin: 0 auto;
+    background-color: black;
+  }
+</style>
+</head>
+<body>
+<canvas id="gameCanvas" width="800" height="600"></canvas>
+<script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+  
+    const paddleWidth = 10;
+    const paddleHeight = 100;
+    const player1PaddleSpeed = 20; // Faster paddle speed for player 1(user)
+    const player2PaddleSpeed = 3.5; // Slower paddle speed for player 2(computer)
+    let player1Y = canvas.height / 2 - paddleHeight / 2;
+    let player2Y = canvas.height / 2 - paddleHeight / 2;
+  
+    const ballSize = 10;
+    let ballX = canvas.width / 2;
+    let ballY = canvas.height / 2;
+    let ballSpeedX = 4;
+    let ballSpeedY = 4;
+  
+    const keys = {};
+
+      let gameStarted = false; // Add a variable to control the game start state
+      let playerScore = 0;
+      let computerScore = 0;
+
+  
+      function update() {
+  if (!gameStarted) return;
+
+  // Player 2 movement
+  if (ballY > player2Y + paddleHeight / 2 && player2Y < canvas.height - paddleHeight) {
+    player2Y += player2PaddleSpeed;
+  }
+  if (ballY < player2Y + paddleHeight / 2 && player2Y > 0) {
+    player2Y -= player2PaddleSpeed;
+  }
+
+  // Ball movement
+  ballX += ballSpeedX;
+  ballY += ballSpeedY;
+
+  // Ball collision with paddles
+  if ((ballX <= paddleWidth && ballY >= player1Y && ballY <= player1Y + paddleHeight) ||
+    (ballX >= canvas.width - paddleWidth - ballSize && ballY >= player2Y && ballY <= player2Y + paddleHeight)) {
+    ballSpeedX = -ballSpeedX;
+  }
+
+  // Ball collision with top and bottom
+  if (ballY <= 0 || ballY >= canvas.height - ballSize) {
+    ballSpeedY = -ballSpeedY;
+  }
+
+  // Ball out of bounds
+  if (ballX < 0 || ballX > canvas.width) {
+    if (ballX < 0) {
+      computerScore++;
+    } else {
+      playerScore++;
+      checkForUnlock(); // Call the function here
+    }
+    ballX = canvas.width / 2;
+    ballY = canvas.height / 2;
+  }
+}
+
+
+    //check player1 score to see if next game is unlocked
+    function checkForUnlock() {
+      if (playerScore >= 1) {
+        document.getElementById('nextGameText').style.display = 'block';
+        document.getElementById('nextGameButton').style.display = 'block';
+      }
+  }
+
+    
+  
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw paddles
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, player1Y, paddleWidth, paddleHeight);
+    ctx.fillRect(canvas.width - paddleWidth, player2Y, paddleWidth, paddleHeight);
+
+    // Draw ball
+    ctx.fillRect(ballX, ballY, ballSize, ballSize);
+
+    // Draw scores
+    ctx.font = '24px Arial';
+    ctx.fillText(playerScore, canvas.width / 4, 50);
+    ctx.fillText(computerScore, (3 * canvas.width / 4) - 20, 50);
+  }
+
+    
+  
+    function gameLoop() {
+      update();
+      draw();
+      requestAnimationFrame(gameLoop);
+    }
+  
+    gameLoop();
+  
+    document.addEventListener('keydown', (e) => {
+    if (e.key === 'w' && player1Y > 0) {
+      player1Y -= player1PaddleSpeed;
+      gameStarted = true;
+    } else if (e.key === 's' && player1Y < canvas.height - paddleHeight) {
+      player1Y += player1PaddleSpeed;
+      gameStarted = true;
+    }
+  });
+  </script>
+
+  <h2> Pong Game! 
+    <br>
+    Score a point against the Pong-Master to unlock the next game!
+  </h2>
+  <h2 id="nextGameText" style="display: none;">You have unlocked the next game!</h2>
+  <button id="nextGameButton" style="display: none;" onclick="window.location.href='game3.html'">Click Here</button>
+
+  
+</body>
+</html>

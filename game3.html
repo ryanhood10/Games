@@ -17,6 +17,12 @@
     canvas {
       border: 1px solid white;
     }
+    h1{
+        color: antiquewhite;
+    }
+    h4{
+        color: antiquewhite;
+    }
   </style>
 </head>
 <body>
@@ -147,7 +153,7 @@ function update() {
 
   if (invaders.length === 0) {
     clearInterval(gameInterval);
-    const congratsText = document.createElement('h4');
+    const congratsText = document.createElement('p');
     congratsText.textContent = "Congrats! You have saved Earth from the invaders!  You have unlocked the next game.";
     congratsText.style.color = 'white';
     document.body.appendChild(congratsText);
@@ -200,5 +206,8 @@ document.addEventListener('keydown', (event) => {
 });
 
     </script>
+    <h4> Space Invaders game! (arrow keys to move, spacebar to fire)
+    <br>
+        Shoot all of the Invaders to get to the next game!  </h4>
 </body>
 </html>
